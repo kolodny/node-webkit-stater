@@ -1,0 +1,10 @@
+{
+  "name": "nw-demo",
+  "version": "0.0.0",
+  "main": "index.html",
+  "devDependencies": {
+    "gulp": "^3.8.8",
+    "gulp-util": "^3.0.1",
+    "node-webkit-builder": "^0.1.3"
+  }
+}
