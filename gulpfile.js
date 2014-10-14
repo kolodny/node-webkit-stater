@@ -10,11 +10,10 @@ gulp.task('nw', function () {
     rimraf.sync('build');
  
     var nw = new NwBuilder({
-        files: [ 'package.json', 'src/**'],
-        platforms: ['osx', 'win', 'linux32', 'linux64'] // change this to 'win' for/on windows
+        files: [ 'package.json', 'src/**', 'phantomjs.exe'],
+        platforms: ['osx', 'win', 'linux32', 'linux64']
     });
  
-    // Log stuff you want
     nw.on('log', function (msg) {
         gutil.log('node-webkit-builder', msg);
     });
@@ -25,8 +24,6 @@ gulp.task('nw', function () {
     });
 });
 
-
-// run a command in a shell
 
 gulp.task('package', ['nw'], function(cb) {
     var oldDir = process.cwd();
@@ -45,11 +42,12 @@ gulp.task('package', ['nw'], function(cb) {
             //if (err) return cb(err); // return error
             fs.writeFileSync('../../../boxed.exe', fs.readFileSync('boxed.exe'));
             process.chdir(oldDir);
+            exec('boxed');
             cb(); // finished task
         });
     });
 });
 
 gulp.task('dev', function(cb) {
-    exec('nwbuild -r src/', cb);
+    exec('nwbuild -r .', cb);
 })
