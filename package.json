@@ -1,11 +1,6 @@
 {
-  "name": "nw-demo",
+  "name": "node-webkit-stater",
   "version": "0.0.0",
-  "window": {
-    "toolbar": false,
-    "toolbar": true
-  },
-  "main": "src/index.html",
   "devDependencies": {
     "glob": "^4.0.6",
     "gulp": "^3.8.8",

@@ -1,27 +1,21 @@
-var NwBuilder = require('node-webkit-builder');
 var gulp = require('gulp');
 var gutil = require('gulp-util');
-var exec = require('child_process').exec;
 var fs = require('fs');
+var path = require('path')
+var exec = require('child_process').exec;
 var glob = require("glob");
 var rimraf = require('rimraf');
+var NwBuilder = require('node-webkit-builder');
+var detectCurrentPlatform = require('node-webkit-builder/lib/detectCurrentPlatform.js')
  
-gulp.task('nw', function () {
+gulp.task('build', function () {
     rimraf.sync('build');
  
-    var nw = new NwBuilder({
-        files: [ 'package.json', 'src/**', 'phantomjs.exe'],
-        platforms: ['osx', 'win', 'linux32', 'linux64']
-    });
- 
-    nw.on('log', function (msg) {
-        gutil.log('node-webkit-builder', msg);
-    });
- 
-    // Build returns a promise, return it so the task isn't called in parallel
-    return nw.build().catch(function (err) {
-        gutil.log('node-webkit-builder', err);
-    });
+    return createNwBuilder();
+});
+
+gulp.task('test', function(cb) {
+    return createNwBuilder(true);
 });
 
 
@@ -48,6 +42,27 @@ gulp.task('package', ['nw'], function(cb) {
     });
 });
 
-gulp.task('dev', function(cb) {
-    exec('nwbuild -r .', cb);
-})
+
+function createNwBuilder(run) {
+    var options = {
+        files: 'src/**/*',
+        platforms: ['osx', 'win', 'linux32', 'linux64'],
+        version: 'latest',
+        cacheDir: path.resolve(__dirname, 'cache'),
+        buildDir: path.resolve(__dirname, 'build')
+    };
+    if (run) {
+        var currentPlatform = detectCurrentPlatform()
+        options.platforms = [ currentPlatform ];
+        options.currentPlatform = currentPlatform;
+    }
+    var nw = new NwBuilder(options);
+    nw.on('log', function (msg) {
+        gutil.log('node-webkit-builder', msg);
+    });
+
+    var np = (run ? nw.run() : nw.build());
+    return np.catch(function (err) {
+        throw new gutil.PluginError('node-webkit-builder', err);
+    });
+}
