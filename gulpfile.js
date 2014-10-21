@@ -1,21 +1,40 @@
 var gulp = require('gulp');
 var gutil = require('gulp-util');
+var http = require('http');
 var fs = require('fs');
 var path = require('path')
 var exec = require('child_process').exec;
 var glob = require("glob");
 var rimraf = require('rimraf');
 var NwBuilder = require('node-webkit-builder');
-var detectCurrentPlatform = require('node-webkit-builder/lib/detectCurrentPlatform.js')
+var detectCurrentPlatform = require('node-webkit-builder/lib/detectCurrentPlatform.js');
+
+var fakeEnpoint, server;
  
 gulp.task('build', function () {
+    try {
+        rimraf.sync('build');
+    } catch(e) {}
     rimraf.sync('build');
  
     return createNwBuilder();
 });
 
+gulp.task('buildOffline', ['offline', 'build'], function() {
+    if (server) { server.close(); }
+});
+
 gulp.task('test', function(cb) {
     return createNwBuilder(true);
+});
+
+gulp.task('offline', function() {
+    server = http.createServer(function (request,response) {
+        response.writeHead(200,{"Content-Type": "text/html"});
+        response.end('href="v0.10.5/"');
+    }).listen();
+    fakeEnpoint = 'http://localhost:' + server.address().port;
+    console.log(fakeEnpoint)
 });
 
 
@@ -51,6 +70,9 @@ function createNwBuilder(run) {
         cacheDir: path.resolve(__dirname, 'cache'),
         buildDir: path.resolve(__dirname, 'build')
     };
+    if (fakeEnpoint) {
+        options.downloadUrl = fakeEnpoint;
+    }
     if (run) {
         var currentPlatform = detectCurrentPlatform()
         options.platforms = [ currentPlatform ];

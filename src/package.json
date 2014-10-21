@@ -1,6 +1,7 @@
 {
   "name": "nw-demo",
   "version": "0.0.0",
+  "chromium-args": "--js-flags=--harmony",
   "window": {
     "toolbar": true
   },
@@ -10,5 +11,10 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "autonomous": "0.0.0",
+    "co": "^3.1.0",
+    "which": "^1.0.5"
+  }
 }
