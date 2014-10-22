@@ -9,6 +9,6 @@
     "rimraf": "^2.2.8"
   },
   "scripts": {
-  	"postinstall": "cd src && npm install"
+    "postinstall": "cd src && npm install"
   }
 }
