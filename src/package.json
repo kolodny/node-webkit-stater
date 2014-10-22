@@ -13,7 +13,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "autonomous": "0.0.0",
+    "autonomous": "0.0.2",
     "co": "^3.1.0",
     "which": "^1.0.5"
   }
